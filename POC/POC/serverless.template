@@ -1,0 +1,84 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Transform" : "AWS::Serverless-2016-10-31",
+  "Description" : "Starting template for an AWS Serverless Application.",
+  "Parameters" : {
+  },
+  "Resources" : {
+    "GetProduct" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "POC::POC.Function::FunctionGetProducts",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Default function",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambda_FullAccess" ,
+        "AmazonDynamoDBFullAccess"],
+        "Events": {
+          "ProxyResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/{proxy+}",
+              "Method": "ANY"
+            }
+          }
+        }
+      }
+    },
+    "AddProduct" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "POC::POC.Function::FunctionAddProduct",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Function for adding the product",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambda_FullAccess" ,
+        "AmazonDynamoDBFullAccess"],
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "PUT"
+            }
+          }
+        }
+      }
+    },
+     "DeleteProduct" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "POC::POC.Function::FunctionDeleteProduct",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "Description": "Function for deleting the product",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambda_FullAccess" ,
+        "AmazonDynamoDBFullAccess"],
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "DELETE"
+            }
+          }
+        }
+      }
+    }
+  },
+  "Outputs" : {
+    "ApiURL" : {
+        "Description" : "API endpoint URL for Prod environment",
+        "Value" : { "Fn::Sub" : "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/" }
+    }
+  }
+}
