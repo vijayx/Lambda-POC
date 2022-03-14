@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,11 +24,22 @@ namespace POC
         /// <returns></returns>
         public async Task<bool> CreateProductAsync(Product product)
         {
+            String ProductID = null;
+            if (string.IsNullOrEmpty(product.ProductID))
+            {
+                ProductID = Guid.NewGuid().ToString();
+
+            }
+            else
+            {
+                ProductID = product.ProductID;
+            }
+
             var request = new PutItemRequest
             {
                 TableName = "dat_Product",
                 Item = new Dictionary<string, AttributeValue>
-                {{ "ProductID", new AttributeValue(product.ProductID) },
+                {{ "ProductID", new AttributeValue(ProductID) },
                     { "ProductName", new AttributeValue(product.ProductName) },
                     { "ProductDescription", new AttributeValue(product.ProductDescription) },
 
